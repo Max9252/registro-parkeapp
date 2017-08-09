@@ -1,3 +1,33 @@
 page-home {
+  p {
+    font-size: 0.8em;
+    color: #d2d2d2;
+  }
 
+  .select-text,
+  ion-label {
+    margin-left: 10px;
+  }
+
+  p.danger {
+    color: #ea6153;
+  }
+
+  .invalid {
+    border-bottom:: 1px solid #ea6153;
+  }
+
+  .swiper-slide:not(.swiper-slide-active) > div {
+    display: none;
+  }
+
+  .gallery-button {
+    font-size: 20px;
+    color: #488aff;
+  }
+
+  .img-preview {
+    width: 80px;
+    height: 80px;
+  }
 }

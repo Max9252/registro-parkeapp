@@ -1,14 +1,423 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
-      Ionic Blank
+      Registra tu parqueadero
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content>
+
+  <ion-grid no-padding>
+
+    <ion-slides #signupSlider>
+      <ion-slide>
+        <ion-list no-lines>
+          <form [formGroup]="slideOneForm">
+            <h5>Paso 1. Datos del parqueadero</h5>
+            <p *ngIf="submitAttempt&&!slideOneForm.valid" style="color: #ea6153;">Por favor, llene todos los datos del formulario.</p>
+            <ion-row no-padding>
+              <ion-col col-6>
+                <ion-item>
+                  <ion-label floating>Departamento</ion-label>
+                  <ion-select [class.invalid]="!slideOneForm.controls.departamento.valid && (slideOneForm.controls.departamento.dirty || submitAttempt)" formControlName="departamento">
+                    <ion-option value="cundinamarca">Cundinamarca</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.departamento.valid && (slideOneForm.controls.departamento.dirty || submitAttempt)">
+                  <p class="danger">Seleccione un departamento.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <ion-label floating>Ciudad</ion-label>
+                  <ion-select [class.invalid]="!slideOneForm.controls.ciudad.valid && (slideOneForm.controls.ciudad.dirty || submitAttempt)" formControlName="ciudad">
+                    <ion-option value="bogota">Bogota</ion-option>
+                    <ion-option value="medellin">Medellin</ion-option>
+                    <ion-option value="cali">Santiago de Cali</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.ciudad.valid && (slideOneForm.controls.ciudad.dirty || submitAttempt)">
+                  <p class="danger">Selecciona una ciudad.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-10>
+                <ion-item>
+                  <ion-label stacked>Dirección</ion-label>
+                  <ion-input type="text" [(ngModel)]="direccion" [class.invalid]="!slideOneForm.controls.direccion.valid && (slideOneForm.controls.direccion.dirty || submitAttempt)" formControlName="direccion"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.direccion.valid && (slideOneForm.controls.direccion.dirty || submitAttempt)">
+                  <p class="danger">Introduzca una dirección.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-2 style="margin-top:20px;">
+                <button ion-button color="default" (click)="launchLocationPage()" clear icon-only>
+                  <ion-icon ios="ios-locate" md="md-locate"></ion-icon>
+                </button>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Edificio (Opcional)</ion-label>
+                  <ion-input type="text"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Vehiculos que admite</ion-label>
+                  <ion-select multiple="true" cancelText="Cancelar" okText="Aceptar" (ionChange)="onChangeVehiculoSelected($event)" [(ngModel)]="vehiculoOpciones" [class.invalid]="!slideOneForm.controls.vehiculos.valid && (slideOneForm.controls.vehiculos.dirty || submitAttempt)"
+                    formControlName="vehiculos">
+                    <ion-option value="automoviles">Automoviles</ion-option>
+                    <ion-option value="bicicletas">Bicicletas</ion-option>
+                    <ion-option value="motocicletas">Motocicletas</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.vehiculos.valid && (slideOneForm.controls.vehiculos.dirty || submitAttempt)">
+                  <p class="danger">Seleccione al menos un tipo de vehiculo.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12 *ngIf="automoviles">
+                <h6>Información para automoviles</h6>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Espacios disponibles:</ion-label>
+                    <ion-input type="text"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Valor mensual:
+                      <p *ngIf="valorMensualCarro">$ {{valorMensualCarro | number:'.2-2'}}</p>
+                    </ion-label>
+                    <ion-input type="number" [ngModel]="valorMensualCarro" [ngModelOptions]="{standalone: true}" (ngModelChange)="formatValorCarro($event)"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-col>
+              <ion-col col-12 *ngIf="bicicletas">
+                <h6>Información para bicicletas</h6>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Espacios disponibles:</ion-label>
+                    <ion-input type="number"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Valor mensual:
+                      <p *ngIf="valorMensualBicicleta">$ {{valorMensualBicicleta | number:'.2-2'}}</p>
+                    </ion-label>
+                    <ion-input type="number" [ngModel]="valorMensualBicicleta" [ngModelOptions]="{standalone: true}" (ngModelChange)="formatValorBicicleta($event)"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-col>
+              <ion-col col-12 *ngIf="motocicletas">
+                <h6>Información para motocicletas</h6>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Espacios disponibles:</ion-label>
+                    <ion-input type="number"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Valor mensual:
+                      <p *ngIf="valorMensualMotocicleta">$ {{valorMensualMotocicleta | number:'.2-2'}}</p>
+                    </ion-label>
+                    <ion-input type="number" [ngModel]="valorMensualMotocicleta" [ngModelOptions]="{standalone: true}" (ngModelChange)="formatValorMotocicleta($event)"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-col>
+              <ion-col col-10>
+                <ion-item>
+                  <ion-label>Jornada</ion-label>
+                  <ion-select cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideOneForm.controls.jornada.valid && (slideOneForm.controls.jornada.dirty || submitAttempt)" formControlName="jornada">
+                    <ion-option value="completa">Completa</ion-option>
+                    <ion-option value="par">Par</ion-option>
+                    <ion-option value="impar">Impar</ion-option>
+                  </ion-select>
+                  <ion-item *ngIf="!slideOneForm.controls.jornada.valid && (slideOneForm.controls.jornada.dirty || submitAttempt)">
+                    <p class="danger">Seleccione una jornada.</p>
+                  </ion-item>
+                </ion-item>
+              </ion-col>
+              <ion-col col-2>
+                <button ion-button color="default" clear icon-only>
+                  <ion-icon md="md-help-circle" is-active="true"></ion-icon>
+                </button>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Horario</ion-label>
+                  <ion-select (ionChange)="onChangeHorario($event)" [(ngModel)]="horarioOpciones" cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideOneForm.controls.horario.valid && (slideOneForm.controls.horario.dirty || submitAttempt)" formControlName="horario">
+                    <ion-option value="continuo">24 horas</ion-option>
+                    <ion-option value="ordinario">Personalizado</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.horario.valid && (slideOneForm.controls.horario.dirty || submitAttempt)">
+                  <p class="danger">Seleccione un horario.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6 *ngIf="horarioPersonalizado">
+                <ion-list>
+                  <ion-item>
+                    <ion-label floating>Hora de entrada</ion-label>
+                    <ion-input type="horaEntrada"></ion-input>
+                  </ion-item>
+                </ion-list>
+              </ion-col>
+              <ion-col col-6 *ngIf="horarioPersonalizado">
+                <ion-list>
+                  <ion-item>
+                    <ion-label floating>Hora de salida</ion-label>
+                    <ion-input type="horaSalida"></ion-input>
+                  </ion-item>
+                </ion-list>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Sistema de apertura</ion-label>
+                  <ion-select cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideOneForm.controls.apertura.valid && (slideOneForm.controls.apertura.dirty || submitAttempt)" formControlName="apertura">
+                    <ion-option value="automatica">Automatica</ion-option>
+                    <ion-option value="manual">Manual</ion-option>
+                    <ion-option value="Celaduria">Celaduria</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.apertura.valid && (slideOneForm.controls.apertura.dirty || submitAttempt)">
+                  <p class="danger">Seleccione un sistema de apertura.</p>
+                </ion-item>
+                <ion-item>
+                  <ion-label floating>Tamaño del parqueadero</ion-label>
+                  <ion-select cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideOneForm.controls.tamano.valid && (slideOneForm.controls.tamano.dirty || submitAttempt)" formControlName="tamano">
+                    <ion-option value="pequeño">Pequeño (1.7 m x 2.7 m)</ion-option>
+                    <ion-option value="mediano">Mediano (2 m x 3 m)</ion-option>
+                    <ion-option value="grande">Grande (2.5 m x 3.5 m)</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.tamano.valid && (slideOneForm.controls.tamano.dirty || submitAttempt)">
+                  <p class="danger">Seleccione el tamaño del parqueadero.</p>
+                </ion-item>
+                <ion-item>
+                  <ion-label floating>Caracteristicas</ion-label>
+                  <ion-select multiple="true" cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideOneForm.controls.caracteristicas.valid && (slideOneForm.controls.caracteristicas.dirty || submitAttempt)" formControlName="caracteristicas">
+                    <ion-option value="accesible">Accesible para discapacitados</ion-option>
+                    <ion-option value="seguridad">Personal de seguridad</ion-option>
+                    <ion-option value="cubierto">Parqueadero cubierto</ion-option>
+                    <ion-option value="camara">Cámaras de seguridad</ion-option>
+                    <ion-option value="llaves">Se requiere dejar llaves</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.caracteristicas.valid && (slideOneForm.controls.caracteristicas.dirty || submitAttempt)">
+                  <p class="danger">Seleccione al menos una caracteristicas del parqueadero.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <h6>Fotos del parqueadero</h6>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <div class="gallery-button" text-center on-tap="openActionSheet(1)">
+                    <img [src]="imageOne" class="img-preview" *ngIf="imageOne" />
+                    <ion-icon class="icon-lg" name="images" *ngIf="!imageOne"></ion-icon>
+                    <p>Foto 1</p>
+                  </div>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <div class="gallery-button" text-center on-tap="openActionSheet(2)">
+                    <img [src]="imageTwo" class="img-preview" *ngIf="imageTwo" />
+                    <ion-icon name="images" class="icon-lg" *ngIf="!imageTwo"></ion-icon>
+                    <p>Foto 2</p>
+                  </div>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <div class="gallery-button" text-center on-tap="openActionSheet(3)">
+                    <img [src]="imageThree" class="img-preview" *ngIf="imageThree" />
+                    <ion-icon name="images" class="icon-lg" *ngIf="!imageThree"></ion-icon>
+                    <p>Foto 3</p>
+                  </div>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <div class="gallery-button" text-center on-tap="openActionSheet(4)">
+                    <img [src]="imageFour" class="img-preview" *ngIf="imageFour" />
+                    <ion-icon name="images" class="icon-lg" *ngIf="!imageFour"></ion-icon>
+                    <p>Foto 4</p>
+                  </div>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label color="black" stacked>Descripción</ion-label>
+                  <ion-textarea [class.invalid]="!slideOneForm.controls.descripcion.valid && (slideOneForm.controls.descripcion.dirty || submitAttempt)" formControlName="descripcion" placeholder="Maximo 255 caracteres."></ion-textarea>
+                </ion-item>
+                <ion-item *ngIf="!slideOneForm.controls.descripcion.valid && (slideOneForm.controls.descripcion.dirty || submitAttempt)">
+                  <p class="danger">Introduzca una descripción para su parqueadero.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <div text-center>
+                  <button type="button" name="button" (click)="next()" ion-button>Siguiente </button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </form>
+        </ion-list>
+      </ion-slide>
+      <ion-slide>
+
+        <ion-list no-lines>
+          <form [formGroup]="slideTwoForm">
+            <h5>Paso 2. Datos personales</h5>
+            <p *ngIf="submitAttempt&&!slideTwoForm.valid" style="color: #ea6153;">Por favor, llene todos los datos del formulario.</p>
+            <ion-row>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Nombre(s)</ion-label>
+                  <ion-input type="text" [class.invalid]="!slideTwoForm.controls.nombre.valid && (slideTwoForm.controls.nombre.dirty || submitAttempt)" formControlName="nombre"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideTwoForm.controls.nombre.valid && (slideTwoForm.controls.nombre.dirty || submitAttempt)">
+                  <p class="danger">Introduzca su nombre.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Apellido(s)</ion-label>
+                  <ion-input type="text" [class.invalid]="!slideTwoForm.controls.apellido.valid && (slideTwoForm.controls.apellido.dirty || submitAttempt)" formControlName="apellido"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideTwoForm.controls.apellido.valid && (slideTwoForm.controls.apellido.dirty || submitAttempt)">
+                  <p class="danger">Introduzca su(s) apellido(s).</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>E-mail</ion-label>
+                  <ion-input type="text" [class.invalid]="!slideTwoForm.controls.email.valid && (slideTwoForm.controls.email.dirty || submitAttempt)" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideTwoForm.controls.email.valid && (slideTwoForm.controls.email.dirty || submitAttempt)">
+                  <p class="danger">Introduzca un correo electronico valido.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Télefono</ion-label>
+                  <ion-input type="number" [class.invalid]="!slideTwoForm.controls.telefono.valid && (slideTwoForm.controls.telefono.dirty || submitAttempt)" formControlName="telefono"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!slideTwoForm.controls.telefono.valid && (slideTwoForm.controls.telefono.dirty || submitAttempt)">
+                  <p class="danger">Introduzca un numero de telefono valido.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <ion-label floating>Departamento</ion-label>
+                  <ion-select cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideTwoForm.controls.departamento.valid && (slideTwoForm.controls.departamento.dirty || submitAttempt)" formControlName="departamento">
+                    <ion-option value="nes">Cundinamarca</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideTwoForm.controls.departamento.valid && (slideTwoForm.controls.departamento.dirty || submitAttempt)">
+                  <p class="danger">Seleccione un departamento.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <ion-item>
+                  <ion-label floating>Ciudad</ion-label>
+                  <ion-select cancelText="Cancelar" okText="Aceptar" [class.invalid]="!slideTwoForm.controls.ciudad.valid && (slideTwoForm.controls.ciudad.dirty || submitAttempt)" formControlName="ciudad">
+                    <ion-option value="bogota">Bogota</ion-option>
+                    <ion-option value="medellin">Medellin</ion-option>
+                    <ion-option value="cali">Santiago de Cali</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideTwoForm.controls.ciudad.valid && (slideTwoForm.controls.ciudad.dirty || submitAttempt)">
+                  <p class="danger">Seleccione una ciudad.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-6>
+                <button type="button" name="button" (click)="prev()" ion-button>Anterior </button>
+              </ion-col>
+              <ion-col col-6>
+                <button type="button" name="button" (click)="next()" ion-button>Siguiente </button>
+              </ion-col>
+            </ion-row>
+          </form>
+        </ion-list>
+      </ion-slide>
+
+      <ion-slide>
+        <ion-list no-lines>
+          <form [formGroup]="slideThreeForm">
+            <h5>Paso 3. Datos bancarios</h5>
+            <p *ngIf="submitAttempt&&!slideThreeForm.valid" style="color: #ea6153;">Por favor, llene todos los datos del formulario.</p>
+            <ion-row>
+              <ion-col col-12>
+                <ion-item>
+                  <ion-label floating>Método de pago</ion-label>
+                  <ion-select (ionChange)="onChangeMetodoPago($event)" [(ngModel)]="opcionesPago" [class.invalid]="!slideThreeForm.controls.metodo.valid && (slideThreeForm.controls.metodo.dirty || submitAttempt)" formControlName="metodo">
+                    <ion-option value="deposito">Depósito Bancario</ion-option>
+                    <ion-option value="giro">Giro Nacional</ion-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!slideThreeForm.controls.metodo.valid && (slideThreeForm.controls.metodo.dirty || submitAttempt)">
+                  <p class="danger">Seleccione una metodo de pago.</p>
+                </ion-item>
+              </ion-col>
+              <ion-col col-12 *ngIf="giroNacional">
+                <h6>Giro Nacional</h6>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Nombre de la persona que realiza el giro</ion-label>
+                    <ion-input type="text"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Numero de Cedula</ion-label>
+                    <ion-input type="number"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-col>
+              <ion-col col-12 *ngIf="depositoBancario">
+                <h6>Depósito Bancario</h6>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Nombre de la entidad bancaria</ion-label>
+                    <ion-input type="text"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Nombre del titular de la cuenta</ion-label>
+                    <ion-input type="text"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Tipo de cuenta:</ion-label>
+                    <ion-select>
+                      <ion-option value="ahorros">Cuenta de Ahorros</ion-option>
+                      <ion-option value="corriente">Cuenta Corriente</ion-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+                <ion-col col-12>
+                  <ion-item>
+                    <ion-label floating>Numero de la cuenta</ion-label>
+                    <ion-input type="number"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-col>
+              <ion-col col-6>
+                <button type="button" name="button" (click)="prev()" ion-button>Anterior </button>
+              </ion-col>
+              <ion-col col-6>
+                <button type="button" name="button" (click)="save()" ion-button>Registrar </button>
+              </ion-col>
+            </ion-row>
+          </form>
+        </ion-list>
+      </ion-slide>
+    </ion-slides>
+  </ion-grid>
+
 </ion-content>

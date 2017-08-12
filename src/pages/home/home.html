@@ -80,7 +80,7 @@
                 <ion-col col-12>
                   <ion-item>
                     <ion-label floating>Espacios disponibles:</ion-label>
-                    <ion-input type="text"></ion-input>
+                    <ion-input type="text" [class.invalid]="!slideOneForm.controls.espacioAutomovil.valid && (slideOneForm.controls.espacioAutomovil.dirty || submitAttempt)" formControlName="espacioAutomovil"></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col col-12>
@@ -88,7 +88,7 @@
                     <ion-label floating>Valor mensual:
                       <p *ngIf="valorMensualCarro">$ {{valorMensualCarro | number:'.2-2'}}</p>
                     </ion-label>
-                    <ion-input type="number" [ngModel]="valorMensualCarro" [ngModelOptions]="{standalone: true}" (ngModelChange)="formatValorCarro($event)"></ion-input>
+                    <ion-input type="number" [ngModel]="valorMensualCarro" (ngModelChange)="formatValorCarro($event)" [class.invalid]="!slideOneForm.controls.valorMensualCarro.valid && (slideOneForm.controls.valorMensualCarro.dirty || submitAttempt )" formControlName="valorMensualCarro"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-col>
@@ -97,7 +97,7 @@
                 <ion-col col-12>
                   <ion-item>
                     <ion-label floating>Espacios disponibles:</ion-label>
-                    <ion-input type="number"></ion-input>
+                    <ion-input type="number" [class.invalid]="!slideOneForm.controls.espacioBicicleta.valid && (slideOneForm.controls.espacioBicicleta.dirty || submitAttempt && bicicletas)" formControlName="espacioBicicleta">></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col col-12>
@@ -105,7 +105,8 @@
                     <ion-label floating>Valor mensual:
                       <p *ngIf="valorMensualBicicleta">$ {{valorMensualBicicleta | number:'.2-2'}}</p>
                     </ion-label>
-                    <ion-input type="number" [ngModel]="valorMensualBicicleta" [ngModelOptions]="{standalone: true}" (ngModelChange)="formatValorBicicleta($event)"></ion-input>
+                    <ion-input type="number" [ngModel]="valorMensualBicicleta" (ngModelChange)="formatValorBicicleta($event)" [class.invalid]="!slideOneForm.controls.valorMensualBicicleta.valid && (slideOneForm.controls.valorMensualBicicleta.dirty || submitAttempt && bicicletas)"
+                      formControlName="valorMensualBicicleta"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-col>
@@ -114,7 +115,8 @@
                 <ion-col col-12>
                   <ion-item>
                     <ion-label floating>Espacios disponibles:</ion-label>
-                    <ion-input type="number"></ion-input>
+                    <ion-input type="number" [class.invalid]="!slideOneForm.controls.espacioMotocicleta.valid && (slideOneForm.controls.espacioMotocicleta.dirty || submitAttempt && motocicletas)"
+                      formControlName="espacioMotocicleta"></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col col-12>
@@ -122,7 +124,8 @@
                     <ion-label floating>Valor mensual:
                       <p *ngIf="valorMensualMotocicleta">$ {{valorMensualMotocicleta | number:'.2-2'}}</p>
                     </ion-label>
-                    <ion-input type="number" [ngModel]="valorMensualMotocicleta" [ngModelOptions]="{standalone: true}" (ngModelChange)="formatValorMotocicleta($event)"></ion-input>
+                    <ion-input type="number" [ngModel]="valorMensualMotocicleta" (ngModelChange)="formatValorMotocicleta($event)" [class.invalid]="!slideOneForm.controls.valorMensualMotocicleta.valid && (slideOneForm.controls.valorMensualMotocicleta.dirty || submitAttempt && motocicletas)"
+                      formControlName="valorMensualMotocicleta"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-col>

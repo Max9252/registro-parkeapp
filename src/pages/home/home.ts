@@ -32,7 +32,6 @@ export class HomePage {
   imageTwo: string;
   imageThree: string;
   imageFour: string;
-  slideOptions: any;
 
   private vehiculoOpciones: Array<string>;
   private horarioOpciones: Array<string>;
@@ -59,6 +58,12 @@ export class HomePage {
       tamano: ['', Validators.required],
       caracteristicas: ['', Validators.required],
       descripcion: ['', Validators.required],
+      espacioAutomovil: ['', Validators.required],
+      valorMensualCarro: ['', Validators.required],
+      espacioBicicleta: ['', Validators.required],
+      valorMensualBicicleta: ['', Validators.required],
+      espacioMotocicleta: ['', Validators.required],
+      valorMensualMotocicleta: ['', Validators.required],
     });
 
     this.slideTwoForm = formBuilder.group({
@@ -70,7 +75,13 @@ export class HomePage {
       departamento: ['', Validators.required],
     });
     this.slideThreeForm = formBuilder.group({
-      metodo: ['', Validators.required]
+      metodo: ['', Validators.required],
+      entidadBancario : ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+      titular: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+      tipoCuenta: ['', Validators.required],
+      numeroCuenta: ['', Validators.required],
+      cedula: ['', Validators.required],
+      personaGiro : ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])]
     });
   }
 
@@ -100,7 +111,7 @@ export class HomePage {
     esValido = this.vehiculoOpciones.indexOf("bicicletas") !== -1 ? this.bicicletas = true : this.bicicletas = false;
   }
 
-  onChangeMetodoPago(){
+  onChangeMetodoPago() {
     let esValido;
     esValido = this.opcionesPago.indexOf("giro") !== -1 ? this.giroNacional = true : this.giroNacional = false;
     esValido = this.opcionesPago.indexOf("deposito") !== -1 ? this.depositoBancario = true : this.depositoBancario = false;

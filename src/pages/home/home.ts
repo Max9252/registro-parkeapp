@@ -58,12 +58,12 @@ export class HomePage {
       tamano: ['', Validators.required],
       caracteristicas: ['', Validators.required],
       descripcion: ['', Validators.required],
-      espacioAutomovil: ['', Validators.required],
-      valorMensualCarro: ['', Validators.required],
-      espacioBicicleta: ['', Validators.required],
-      valorMensualBicicleta: ['', Validators.required],
-      espacioMotocicleta: ['', Validators.required],
-      valorMensualMotocicleta: ['', Validators.required],
+      espacioAutomovil: ['', Validators.nullValidator],
+      valorMensualCarro: ['', Validators.nullValidator],
+      espacioBicicleta: ['', Validators.nullValidator],
+      valorMensualBicicleta: ['', Validators.nullValidator],
+      espacioMotocicleta: ['', Validators.nullValidator],
+      valorMensualMotocicleta: ['', Validators.nullValidator],
     });
 
     this.slideTwoForm = formBuilder.group({
@@ -74,6 +74,7 @@ export class HomePage {
       ciudad: ['', Validators.required],
       departamento: ['', Validators.required],
     });
+
     this.slideThreeForm = formBuilder.group({
       metodo: ['', Validators.required],
       entidadBancario : ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -99,16 +100,47 @@ export class HomePage {
         this.direccion = location.address;
       }
     });
-
     modal.present();
-
   }
 
   onChangeVehiculoSelected() {
     let esValido;
-    esValido = this.vehiculoOpciones.indexOf("automoviles") !== -1 ? this.automoviles = true : this.automoviles = false;
-    esValido = this.vehiculoOpciones.indexOf("motocicletas") !== -1 ? this.motocicletas = true : this.motocicletas = false;
-    esValido = this.vehiculoOpciones.indexOf("bicicletas") !== -1 ? this.bicicletas = true : this.bicicletas = false;
+    if(this.vehiculoOpciones.indexOf("automoviles") !== -1 ){
+      this.automoviles = true;
+      this.slideOneForm.get('espacioAutomovil').setValidators(Validators.required);
+      this.slideOneForm.get('valorMensualCarro').setValidators(Validators.required);
+    }else{
+      this.automoviles = false;
+      this.slideOneForm.get('espacioAutomovil').setValidators(Validators.nullValidator);
+      this.slideOneForm.get('valorMensualCarro').setValidators(Validators.nullValidator);
+    }
+
+    if(this.vehiculoOpciones.indexOf("bicicletas") !== -1 ){
+      this.bicicletas = true;
+      this.slideOneForm.get('espacioBicicleta').setValidators(Validators.required);
+      this.slideOneForm.get('valorMensualBicicleta').setValidators(Validators.required);
+    }else{
+      this.bicicletas = false;
+      this.slideOneForm.get('espacioBicicleta').setValidators(Validators.nullValidator);
+      this.slideOneForm.get('valorMensualBicicleta').setValidators(Validators.nullValidator);
+      console.log(this.slideOneForm.get('valorMensualBicicleta'));
+    }
+
+    if(this.vehiculoOpciones.indexOf("motocicletas") !== -1 ){
+      this.motocicletas = true;
+      this.slideOneForm.get('espacioMotocicleta').setValidators(Validators.required);
+      this.slideOneForm.get('valorMensualMotocicleta').setValidators(Validators.required);
+    }else{
+      this.motocicletas = false;
+      this.slideOneForm.get('espacioMotocicleta').setValidators(Validators.nullValidator);
+      this.slideOneForm.get('valorMensualMotocicleta').setValidators(Validators.nullValidator);
+    }
+
+  }
+
+  onChangeHorario(){
+    let esValido;
+    esValido = this.horarioOpciones.indexOf("ordinario") !== -1 ? this.horarioPersonalizado = true : this.horarioPersonalizado = false;
   }
 
   onChangeMetodoPago() {
@@ -244,5 +276,6 @@ export class HomePage {
       console.log(this.slideThreeForm.value);
     }
   }
+
 
 }
